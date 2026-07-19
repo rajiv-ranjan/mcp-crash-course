@@ -135,29 +135,29 @@ async def main():
         tool_names = [tool.name for tool in all_tools]
 
         # Define system prompt with tool-calling instructions
-        system_prompt = """You are a helpful assistant with access to tools. Follow these rules:
+#         system_prompt = """You are a helpful assistant with access to tools. Follow these rules:
 
-IMPORTANT RULES:
-1. DO NOT assume or make up any data, values, or information
-2. If you need live data, current information, or any computation - YOU MUST call the appropriate tool
-3. ALWAYS use available tools for calculations, data retrieval, or any task they can perform
-4. If a tool is not available for the requested task, clearly state that you cannot perform it
-5. Be precise and only provide information that comes from tool results or is explicitly stated by the user
+# IMPORTANT RULES:
+# 1. DO NOT assume or make up any data, values, or information
+# 2. If you need live data, current information, or any computation - YOU MUST call the appropriate tool
+# 3. ALWAYS use available tools for calculations, data retrieval, or any task they can perform
+# 4. If a tool is not available for the requested task, clearly state that you cannot perform it
+# 5. Be precise and only provide information that comes from tool results or is explicitly stated by the user
 
-TOOL-SPECIFIC INSTRUCTIONS:
+# TOOL-SPECIFIC INSTRUCTIONS:
 
-Weather Tool (get_weather):
-- When users ask about weather, temperature, humidity, climate, or weather conditions for any location, use the get_weather tool
-- Extract the location name from the user's query and pass it as the location parameter
-- Examples: "What's the weather in Bangalore?", "How hot is Mumbai?", "Tell me the temperature in Delhi"
+# Weather Tool (get_weather):
+# - When users ask about weather, temperature, humidity, climate, or weather conditions for any location, use the get_weather tool
+# - Extract the location name from the user's query and pass it as the location parameter
+# - Examples: "What's the weather in Bangalore?", "How hot is Mumbai?", "Tell me the temperature in Delhi"
 
-Math Tools (add, multiply):
-- Use these tools for any arithmetic calculations
-- Do not calculate manually - always call the appropriate tool
-"""
+# Math Tools (add, multiply):
+# - Use these tools for any arithmetic calculations
+# - Do not calculate manually - always call the appropriate tool
+# """
 
         # Create agent once with all available tools
-        agent = create_agent(llm, all_tools, system_prompt=system_prompt)
+        agent = create_agent(llm, all_tools)#, system_prompt=system_prompt)
         logger.info(f"Agent created successfully with {len(all_tools)} tools (with system prompt)")
         
         # Display configuration summary
@@ -174,17 +174,15 @@ Math Tools (add, multiply):
         logger.info("="*50)
 
         # Execute test queries
-        logger.info("Executing test query 1: Math calculation")
+        logger.info("Executing test query 1: What is 54 + 2 * 3?")
         result = await agent.ainvoke({"messages": [HumanMessage(content="What is 54 + 2 * 3?")]})
-        logger.info("Q: What is 54 + 2 * 3?")
         logger.info(f"A: {result['messages'][-1].content}")
-        logger.debug(f"Query 1 full response: {result['messages'][-1].content}")
+        
 
-        logger.info("Executing test query 2: Weather + Math calculation")
+        logger.info("Executing test query 2: What is the weather in Bangalore? Take the temperature as T and perform T + 2 * 3?")
         result = await agent.ainvoke({"messages": [HumanMessage(content="What is the weather in Bangalore? Take the temperature as T and perform T + 2 * 3?")]})
-        logger.info("Q: What is the weather in Bangalore? Take the temperature as T and perform T + 2 * 3?")
         logger.info(f"A: {result['messages'][-1].content}")
-        logger.debug(f"Query 2 full response: {result['messages'][-1].content}")
+        
 
 if __name__ == "__main__":
     logger.info("Application started")
