@@ -36,5 +36,5 @@ async def get_weather(location: str) -> str:
     return result
 
 if __name__ == "__main__":
-    logger.info("Starting Weather MCP Server (SSE transport)")
-    mcp.run(transport="sse")
+    logger.info("Starting Weather MCP Server (Streamable HTTP transport)")
+    mcp.run(transport="streamable-http")
